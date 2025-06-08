@@ -16,7 +16,7 @@ function submitHandler(e) {
             if (stateValue === "fulfilled") {
                 resolve(delayValue);
             } else {
-                reject(stateValue);
+                reject(delayValue);
             }
         })
         .then((data) => {
