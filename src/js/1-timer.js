@@ -52,30 +52,64 @@ class Timer {
         const seconds =this.addLeadingZero( Math.floor((((ms % day) % hour) % minute) / second));
         return { days, hours, minutes, seconds };
     }
+    // countDown() {
+    //     const time = Date.now();
+    //     timepicked = timepicked.getTime() - time;
+    //     btn.disabled = true;
+    //     input.disabled = true;
+    //     const intervalID = setInterval(() => {
+    //         const currentTime = Date.now();
+    //         const timePast = currentTime - time;
+    //         const timeLeft = this.convertMs(timepicked - timePast);
+    //         console.log(typeof timePast);
+    //         this.onTick(timeLeft);
+    //         if (timepicked - timePast === 0 ||timepicked - timePast<0) {
+    //             clearInterval(intervalID);
+    //             this.onTick({
+    //                 days: "00",
+    //                 hours: "00",
+    //                 minutes: "00",
+    //                 seconds:"00"
+    //             })
+    //             input.disabled = false;
+    //         }
+    //     }, 1000)
+    // }
     countDown() {
-        console.log(timepicked.getTime());
-        const time = Date.now();
-        timepicked = timepicked.getTime() - time;
+        const targetTime = timepicked.getTime();
+        const startTime = Date.now();
+        const duration = targetTime - startTime;
+        if (duration <= 0) {
+            this.onTick({
+                days: "00",
+                hours: "00",
+                minutes: "00",
+                seconds: "00"
+            });
+            return;
+        }
         btn.disabled = true;
         input.disabled = true;
         const intervalID = setInterval(() => {
             const currentTime = Date.now();
-            const timePast = currentTime - time;
-            const timeLeft = this.convertMs(timepicked - timePast);
-            console.log(typeof timePast);
-            this.onTick(timeLeft);
-            if (timepicked - timePast === 0 ||timepicked - timePast<0) {
+            const elapsed = currentTime - startTime;
+            const remaining = duration - elapsed;
+            if (remaining <= 0) {
                 clearInterval(intervalID);
                 this.onTick({
                     days: "00",
                     hours: "00",
                     minutes: "00",
-                    seconds:"00"
-                })
+                    seconds: "00"
+                });
                 input.disabled = false;
+                return;
             }
-        }, 1000)
+            const timeLeft = this.convertMs(remaining);
+            this.onTick(timeLeft);
+        }, 1000);
     }
+    
 }
 const timerElements = {
     days: document.querySelector('[data-days]'),
